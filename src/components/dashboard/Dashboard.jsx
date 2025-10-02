@@ -1,11 +1,10 @@
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 import { useState } from "react";
-import Dock from "./Dock";
-import NavBar from "./NavBar";
-import LogoutDialog from "./LogoutDialog";
-import FileUpload from "./FileUpload";
-import ContentDisplay from "./ContentDisplay";
-import ContentHolder from "./contentHolder";
+import Dock from "../navigation/Dock";
+import NavBar from "../navigation/NavBar";
+import LogoutDialog from "../auth/LogoutDialog";
+import FileUpload from "../file/FileUpload";
+import ContentHolder from "./ContentHolder";
 import { VscHome, VscArchive, VscAccount, VscSettingsGear } from "react-icons/vsc";
 
 function Dashboard() {
@@ -28,7 +27,7 @@ function Dashboard() {
       <NavBar onLogoutClick={() => setShowLogoutDialog(true)} />
       <div className="w-full h-screen flex flex-col px-3 pt-20 pb-4 bg-white text-6xl font-bold text-[#152a59]">
         {/* Welcome, {user.displayName}! */}
-        <FileUpload />
+        {/* <FileUpload /> */}
         <ContentHolder />
         <Dock items={items} panelHeight={68} baseItemSize={50} magnification={70} />
         <LogoutDialog isOpen={showLogoutDialog} onAbortLogoutClick={() => setShowLogoutDialog(false)}/>

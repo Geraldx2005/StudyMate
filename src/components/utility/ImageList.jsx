@@ -1,18 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { ref, listAll, getDownloadURL } from "firebase/storage";
-import { storage } from "../firebase";
-import {
-  CircularProgress,
-  Box,
-  Typography,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  Avatar,
-  Divider,
-  Button,
-} from "@mui/material";
+import { storage } from "../../firebase";
+import { CircularProgress, Box, Typography, List, ListItem, ListItemAvatar, ListItemText, Avatar, Divider, Button,} from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import ImageIcon from "@mui/icons-material/Image";
@@ -212,32 +201,25 @@ function ContentDisplay() {
                 </Avatar>
               </ListItemAvatar>
 
-              <ListItemText
-                primary={
-                  <Typography
-                    variant="subtitle1"
-                    fontWeight="600"
-                    sx={{ cursor: "pointer", lineHeight: 1.2 }}
-                    onClick={() => handleImageClick(image.url)}
-                  >
-                    {image.name}
+              {/* Custom content area to replace ListItemText */}
+              <Box sx={{ flex: 1, marginRight: 2 }}>
+                <Typography
+                  variant="subtitle1"
+                  fontWeight="600"
+                  sx={{ cursor: "pointer", lineHeight: 1.2, mb: 0.5 }}
+                  onClick={() => handleImageClick(image.url)}
+                >
+                  {image.name}
+                </Typography>
+                <Box display="flex" alignItems="center" gap={2}>
+                  <Typography variant="body2" color="text.secondary">
+                    {image.size}
                   </Typography>
-                }
-                secondary={
-                  <Box display="flex" alignItems="center" gap={2} mt={0.5}>
-                    <Typography variant="body2" color="text.secondary">
-                      {image.size}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {image.uploaded}
-                    </Typography>
-                  </Box>
-                }
-                sx={{
-                  flex: 1,
-                  marginRight: 2,
-                }}
-              />
+                  <Typography variant="body2" color="text.secondary">
+                    {image.uploaded}
+                  </Typography>
+                </Box>
+              </Box>
 
               <Box display="flex" gap={1} alignItems="center" sx={{ minWidth: "120px" }}>
                 <Button

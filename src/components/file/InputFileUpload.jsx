@@ -6,8 +6,8 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import LinearProgress from "@mui/material/LinearProgress";
-import { storage } from "../firebase";
-import { triggerImageRefresh } from "./ContentDisplay";
+import { storage } from "../../firebase";
+import { triggerImageRefresh } from "../utility/ImageList";
 import { ref, uploadBytesResumable, getDownloadURL, getMetadata } from "firebase/storage";
 
 const VisuallyHiddenInput = styled("input")({

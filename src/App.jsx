@@ -1,9 +1,9 @@
 // import { useState } from 'react'
 import React from "react";
-import AuthForm from './components/AuthForm';
-import Dashboard from './components/Dashboard';
+import AuthForm from './components//auth/AuthForm';
+import Dashboard from './components/dashboard/Dashboard';
 import { useAuth } from './context/AuthContext';
-import Loading from './components/Loading';
+import Loading from './components/utility/Loading';
 
 function App() {
   const { user, loading } = useAuth();

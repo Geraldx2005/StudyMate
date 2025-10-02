@@ -1,9 +1,9 @@
 import { useState } from "react";
-import bgImg from "../assets/blue-bg.jpg";
+import bgImg from "../../assets/blue-bg.jpg";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { auth } from "../firebase";
-import { useAuth } from "../context/AuthContext";
+import { auth } from "../../firebase";
+import { useAuth } from "../../context/AuthContext";
 
 export default function AuthForm() {
   const [isLogin, setIsLogin] = useState(true);
