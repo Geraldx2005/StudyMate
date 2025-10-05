@@ -5,7 +5,10 @@ import NavBar from "../navigation/NavBar";
 import LogoutDialog from "../auth/LogoutDialog";
 import FileUpload from "../file/FileUpload";
 import ContentHolder from "./ContentHolder";
-import { VscHome, VscArchive, VscAccount, VscSettingsGear } from "react-icons/vsc";
+import { VscHome, VscArchive, VscAccount, VscSettingsGear, } from "react-icons/vsc";
+import { MdCloudUpload } from "react-icons/md";
+import { LuCloudUpload, LuSearch, LuFolderSearch, LuHouse } from "react-icons/lu";
+// import { IoCloudUploadOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
@@ -19,10 +22,10 @@ function Dashboard() {
   };
 
   const items = [
-    { icon: <VscHome size={18} />, label: "Home", onClick: () => navigate("/") },
-    { icon: <VscArchive size={18} />, label: "Archive", onClick: () => navigate("/images") },
-    { icon: <VscAccount size={18} />, label: "Profile", onClick: () => navigate("/deptlist") },
-    { icon: <VscSettingsGear size={18} />, label: "Settings", onClick: () => navigate("/subject") },
+    { icon: <LuHouse size={22} />, label: "Home", onClick: () => navigate("/") },
+    { icon: <LuFolderSearch  size={22} />, label: "Navigator", onClick: () => navigate("/navigator") },
+    { icon: <LuCloudUpload size={22} />, label: "File Upload", onClick: () => navigate("/upload") },
+    { icon: <LuSearch  size={22} />, label: "Search", onClick: () => navigate("/search") },
   ];
   return (
     <>

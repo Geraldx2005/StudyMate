@@ -22,12 +22,23 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
-export default function InputFileUpload() {
+// Default form data structure
+const defaultFormData = {
+  dept: '',
+  year: '',
+  sem: '',
+  sub: ''
+};
+
+export default function InputFileUpload({ formData = defaultFormData }) {
   const [progress, setProgress] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("info");
   const [uploading, setUploading] = useState(false);
+
+  // Safe form data with fallback
+  const safeFormData = formData || defaultFormData;
 
   const showToast = (message, severity = "info") => {
     setSnackbarMessage(message);
@@ -40,9 +51,24 @@ export default function InputFileUpload() {
     setSnackbarOpen(false);
   };
 
+  const validateFormData = () => {
+    if (!safeFormData.dept || !safeFormData.year || !safeFormData.sem || !safeFormData.sub) {
+      return "Please fill all the form fields before uploading.";
+    }
+    return null;
+  };
+
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
+
+    // Validate form data
+    const validationError = validateFormData();
+    if (validationError) {
+      showToast(validationError, "warning");
+      event.target.value = '';
+      return;
+    }
 
     // Reset input value to allow selecting the same file again
     event.target.value = '';
@@ -52,22 +78,38 @@ export default function InputFileUpload() {
     setProgress(0);
     setSnackbarOpen(true);
 
-    const storageRef = ref(storage, `uploads/${file.name}`);
+    // Create organized folder structure based on form data
+    const fileExtension = file.name.split('.').pop();
+    const fileNameWithoutExtension = file.name.replace(/\.[^/.]+$/, "");
+    const timestamp = new Date().getTime();
+    const organizedFileName = `${fileNameWithoutExtension}_${timestamp}.${fileExtension}`;
+    
+    const filePath = `${safeFormData.dept}/${safeFormData.year}/${safeFormData.sem}/${safeFormData.sub}/${organizedFileName}`;
+    console.log("Uploading to path:", filePath);
+    const storageRef = ref(storage, filePath);
 
     try {
+      // Check if file already exists
       await getMetadata(storageRef);
       setUploading(false);
-      showToast("File with this name already exists!", "warning");
+      showToast("File with this name already exists in this category!", "warning");
       return;
     } catch (error) {
-      if (error.code !== "storage/object-not-found") {
+      // File doesn't exist - this is expected and means we can proceed with upload
+      if (error.code === "storage/object-not-found") {
+        // Proceed with upload since file doesn't exist
+        uploadFile(storageRef, file);
+      } else {
+        // Handle other errors
         setUploading(false);
-        showToast("Error checking file existence.", "error");
+        console.error("Error checking file existence:", error);
+        showToast("Error checking file existence. Please try again.", "error");
         return;
       }
     }
+  };
 
-    // File doesn't exist, proceed with upload
+  const uploadFile = (storageRef, file) => {
     const uploadTask = uploadBytesResumable(storageRef, file);
 
     uploadTask.on(
@@ -78,6 +120,7 @@ export default function InputFileUpload() {
       },
       (error) => {
         setUploading(false);
+        console.error("Upload error:", error);
         showToast("Upload failed! Please try again.", "error");
       },
       () => {
@@ -85,9 +128,23 @@ export default function InputFileUpload() {
           setUploading(false);
           showToast("File uploaded successfully!", "success");
           triggerImageRefresh();
+        }).catch(error => {
+          setUploading(false);
+          console.error("Error getting download URL:", error);
+          showToast("Upload completed but there was an error getting the file URL.", "warning");
         });
       }
     );
+  };
+
+  const getFormStatus = () => {
+    try {
+      const filledFields = Object.values(safeFormData).filter(value => value !== '').length;
+      const totalFields = Object.keys(safeFormData).length;
+      return `${filledFields}/${totalFields} fields filled`;
+    } catch (error) {
+      return "0/4 fields filled";
+    }
   };
 
   const getToastContent = () => {
@@ -106,6 +163,11 @@ export default function InputFileUpload() {
               }
             }}
           />
+          {safeFormData.dept && safeFormData.year && safeFormData.sem && safeFormData.sub && (
+            <span className="text-xs text-gray-300">
+              {safeFormData.dept} • {safeFormData.year} • {safeFormData.sem} • {safeFormData.sub}
+            </span>
+          )}
         </div>
       );
     }
@@ -113,17 +175,26 @@ export default function InputFileUpload() {
   };
 
   return (
-    <div className="flex">
+    <div className="flex flex-col items-center gap-4">
+      <div className="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
+        {getFormStatus()}
+      </div>
+      
       <Button
         component="label"
         variant="contained"
         startIcon={<CloudUploadIcon />}
+        disabled={uploading}
         sx={{
           color: "white",
           backgroundColor: "#152a59",
           "&:hover": {
             backgroundColor: "#1c3973",
             boxShadow: "none",
+          },
+          "&:disabled": {
+            backgroundColor: "#a0a0a0",
+            color: "#e0e0e0"
           },
           borderRadius: "12px",
           padding: "10px 20px",
@@ -137,11 +208,11 @@ export default function InputFileUpload() {
           },
         }}
       >
-        Upload files
+        {uploading ? "Uploading..." : "Upload files"}
         <VisuallyHiddenInput 
           type="file" 
           onChange={handleFileChange} 
-          key={Date.now()} // Alternative solution: force re-render
+          key={Date.now()}
         />
       </Button>
 

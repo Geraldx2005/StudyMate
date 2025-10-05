@@ -1,20 +1,16 @@
-import { use, useState } from "react";
+import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
 
 export default function Accordion({ dept, deptDirName }) {
-  const { setFolderPath } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
 
-  function setFolderLocation(dept) {
-    // Use the useAuth hook to get setFolderPath from context
-    setFolderPath(dept);
-    console.log("Folder path set to:", dept);
+  function setFolderLocation(path) {
+    sessionStorage.setItem("folderPath", path);
+    console.log("Folder path set to:", path);
   }
 
-  // console.log(useAuth());
   return (
     <div className="w-full border rounded-lg mb-4 shadow-sm">
       <button onClick={() => setIsOpen(!isOpen)} className="w-full flex justify-between items-center p-3 text-left">
@@ -42,14 +38,14 @@ export default function Accordion({ dept, deptDirName }) {
                     to="/subject"
                     className="bg-[#152a59] text-white py-1.5 px-4 rounded-md transition-all duration-200 ease-in-out hover:bg-[#1d3b8c]"
                   >
-                    Even Sem
+                    Odd Sem
                   </Link>
                   <Link
                     onClick={() => setFolderLocation(`${deptDirName}/first/even`)}
                     to="/subject"
                     className="bg-[#152a59] text-white py-1.5 px-4 rounded-md transition-all duration-200 ease-in-out hover:bg-[#1d3b8c]"
                   >
-                    Odd Sem
+                    Even Sem
                   </Link>
                 </div>
               </div>
