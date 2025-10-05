@@ -1,18 +1,10 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, use } from "react";
 import { ref, listAll, getDownloadURL } from "firebase/storage";
 import { storage } from "../../firebase";
-import {
-  CircularProgress,
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  CardMedia,
-  IconButton,
-  Skeleton,
-} from "@mui/material";
+import { CircularProgress, Box, Typography, Card, CardContent, CardMedia, IconButton, Skeleton,} from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
 import ImageIcon from "@mui/icons-material/Image";
+import { useAuth } from "../../context/AuthContext";
 
 export const triggerImageRefresh = (imageName) => {
   window.dispatchEvent(
@@ -23,12 +15,15 @@ export const triggerImageRefresh = (imageName) => {
 };
 
 function ImageCard() {
+  const { folderPath, fnlPath } = useAuth();
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState(Date.now());
   const [imageLoadStates, setImageLoadStates] = useState({});
   const preloadedImages = useRef(new Set());
   const observerRef = useRef();
+
+  console.log("Final path from context:", fnlPath);
 
   // Intersection Observer for lazy loading with preloading
   useEffect(() => {
@@ -91,7 +86,7 @@ function ImageCard() {
   const fetchImages = useCallback(async () => {
     setLoading(true);
     try {
-      const listRef = ref(storage, "uploads/");
+      const listRef = ref(storage, `${ fnlPath || "uploads"}/`);
       const res = await listAll(listRef);
 
       const batchSize = 4; // Smaller batches for better performance

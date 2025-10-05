@@ -97,7 +97,7 @@ export default function Dock({
   return (
     <motion.div 
       style={{ height, scrollbarWidth: 'none' }} 
-      className="fixed bottom-0 left-0 right-0 flex justify-center items-end mb-2"
+      className="fixed bottom-0 left-0 right-0 flex justify-center items-end mb-2 pointer-events-none"
     >
       <motion.div
         onMouseMove={({ pageX }) => {
@@ -108,7 +108,7 @@ export default function Dock({
           isHovered.set(0);
           mouseX.set(Infinity);
         }}
-        className={`${className} flex items-end w-fit gap-4 rounded-2xl pb-2 px-4 bg-[#152a59]`}
+        className={`${className} flex items-end w-fit gap-4 rounded-2xl pb-2 px-4 bg-[#152a59] pointer-events-auto`}
         style={{ height: panelHeight }}
         role="toolbar"
         aria-label="Application dock"

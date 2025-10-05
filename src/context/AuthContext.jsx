@@ -7,6 +7,8 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [folderPath, setFolderPath] = useState(null);
+  const [fnlPath, setFnlPath] = useState(null); // New state for final path
   const auth = getAuth();
 
   useEffect(() => {
@@ -20,7 +22,7 @@ export const AuthProvider = ({ children }) => {
   }, [auth]);
 
   return (
-    <AuthContext.Provider value={{ user, setUser, loading }}>
+    <AuthContext.Provider value={{ user, setUser, folderPath, setFolderPath, fnlPath, setFnlPath, loading }}>
       {children}
     </AuthContext.Provider>
   );
